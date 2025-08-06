@@ -2,10 +2,10 @@
   "name": "policypal",
   "version": "1.0.0",
   "description": "An LLM Trained Bot to resolve all your policy-related queries",
-  "scripts": {
+"scripts": {
   "test": "jest",
   "start": "parcel index.html",
-  "build": "node node_modules/parcel/bin/cli.js build index.html"
+  "build": "npx parcel build index.html"
 },
   "repository": {
     "type": "git",
