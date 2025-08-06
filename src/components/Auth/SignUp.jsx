@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-const SignUp = () => {
+
+const SignUpForm = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm_password, setConfirm_password] = useState("");
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
+
+  // --- THIS IS THE FIX ---
+  // We use the same environment variable for the registration endpoint.
+  const API_ENDPOINT = `${process.env.API_URL}/api/user/register`;
+  // --------------------
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     if (password !== confirm_password) {
@@ -13,7 +20,8 @@ const SignUp = () => {
       return;
     }
     try {
-      const res = await fetch("http://localhost:5000/api/user/register", {
+      // The fetch call now uses the correct, dynamic URL
+      const res = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),
@@ -21,16 +29,21 @@ const SignUp = () => {
       const data = await res.json();
 
       if (res.ok) {
-        Navigate("/chat");
+        // It's good practice to also log the user in and set the token after registration
+        if(data.token) {
+          localStorage.setItem("token", data.token);
+        }
+        navigate("/chat");
         alert("Registration successful!");
       } else {
-        alert(data.message || "Regsistration Failed");
+        alert(data.message || "Registration Failed");
       }
     } catch (err) {
       console.error(err);
       alert("Server error");
     }
   };
+
   return (
     <div className="form-container">
       <form className="auth-form" onSubmit={onSubmitHandler}>
@@ -61,10 +74,10 @@ const SignUp = () => {
         </div>
 
         <div className="input-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="signup-password">Password</label>
           <input
             type="password"
-            id="signup-username"
+            id="signup-password"
             placeholder="Password"
             required
             value={password}
@@ -76,7 +89,7 @@ const SignUp = () => {
           <label htmlFor="confirmPassword">Confirm Password</label>
           <input
             type="password"
-            id="signup-password"
+            id="confirmPassword"
             placeholder="Confirm Password"
             required
             value={confirm_password}
@@ -92,4 +105,5 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+// The component is named SignUpForm, so the export should match
+export default SignUpForm;
