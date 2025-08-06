@@ -2,72 +2,51 @@ import React, { useState } from 'react';
 import './DocumentQA.css';
 
 const DocumentQA = () => {
-  // --- State Management ---
   const [file, setFile] = useState(null);
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // --- THE CRITICAL FIX ---
-  // We use an environment variable for the API URL.
-  // This makes the component work both locally and when deployed.
- const API_ENDPOINT = `${process.env.REACT_APP_API_URL}/api/documents/process`;
+  // --- THIS IS THE FINAL FIX ---
+  const API_ENDPOINT = `${import.meta.env.VITE_API_URL}/api/documents/process`;
+  // --------------------------
 
-  // --- Event Handlers ---
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
-    // Clear previous results when a new file is chosen
-    setResult(null);
-    setError('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // Client-side validation
     if (!file || !query) {
       setError('Please upload a file and enter a query.');
       return;
     }
-
-    // Reset state for new submission
     setIsLoading(true);
     setResult(null);
     setError('');
-
-    // Prepare data for sending
     const formData = new FormData();
     formData.append('file', file);
     formData.append('query', query);
 
     try {
-      // Send the request to the backend
       const response = await fetch(API_ENDPOINT, {
         method: 'POST',
         body: formData,
       });
-
       const responseData = await response.json();
-
-      // Handle errors returned from the server
       if (!response.ok) {
-        throw new Error(responseData.message || 'An unknown error occurred on the server.');
+        throw new Error(responseData.message || 'An unknown error occurred.');
       }
-
-      // On success, update the result state
       setResult(responseData);
     } catch (err) {
-      // Handle network errors or other exceptions
       setError(err.message);
       console.error('Error processing document:', err);
     } finally {
-      // Ensure the loading state is always turned off
       setIsLoading(false);
     }
   };
 
-  // --- JSX for Rendering the Component ---
   return (
     <div className="doc-qa-container">
       <div className="doc-qa-header">
@@ -100,7 +79,6 @@ const DocumentQA = () => {
           <div className={`result-display ${result.decision.toLowerCase().replace(/\s+/g, '-')}`}>
             <h3>Analysis Complete</h3>
             <p className="narrative">{result.narrative_response}</p>
-            
             {result.justification && result.justification.length > 0 && (
               <div className="justification-section">
                 <h4>Supporting Clauses from Document:</h4>

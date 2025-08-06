@@ -8,10 +8,9 @@ const SignUpForm = () => {
   const [confirm_password, setConfirm_password] = useState("");
   const navigate = useNavigate();
 
-  // --- THIS IS THE FIX ---
-  // We use the same environment variable for the registration endpoint.
-  const API_ENDPOINT = `${process.env.REACT_APP_API_URL}/api/user/register`;
-  // --------------------
+  // --- THIS IS THE FINAL FIX ---
+  const API_ENDPOINT = `${import.meta.env.VITE_API_URL}/api/user/register`;
+  // --------------------------
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -20,17 +19,14 @@ const SignUpForm = () => {
       return;
     }
     try {
-      // The fetch call now uses the correct, dynamic URL
       const res = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),
       });
       const data = await res.json();
-
       if (res.ok) {
-        // It's good practice to also log the user in and set the token after registration
-        if(data.token) {
+        if (data.token) {
           localStorage.setItem("token", data.token);
         }
         navigate("/chat");
@@ -48,62 +44,26 @@ const SignUpForm = () => {
     <div className="form-container">
       <form className="auth-form" onSubmit={onSubmitHandler}>
         <h2 className="auth-title">Create an Account</h2>
-
         <div className="input-group">
           <label htmlFor="signup-name">Name</label>
-          <input
-            type="text"
-            id="signup-name"
-            placeholder="Name"
-            required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+          <input type="text" id="signup-name" placeholder="Name" required value={username} onChange={(e) => setUsername(e.target.value)} />
         </div>
-
         <div className="input-group">
           <label htmlFor="signup-email">Email</label>
-          <input
-            type="email"
-            id="signup-email"
-            placeholder="Enter your email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <input type="email" id="signup-email" placeholder="Enter your email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
-
         <div className="input-group">
           <label htmlFor="signup-password">Password</label>
-          <input
-            type="password"
-            id="signup-password"
-            placeholder="Password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <input type="password" id="signup-password" placeholder="Password" required value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
-
         <div className="input-group">
           <label htmlFor="confirmPassword">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            placeholder="Confirm Password"
-            required
-            value={confirm_password}
-            onChange={(e) => setConfirm_password(e.target.value)}
-          />
+          <input type="password" id="confirmPassword" placeholder="Confirm Password" required value={confirm_password} onChange={(e) => setConfirm_password(e.target.value)} />
         </div>
-
-        <button type="submit" className="submit-button">
-          Sign Up
-        </button>
+        <button type="submit" className="submit-button">Sign Up</button>
       </form>
     </div>
   );
 };
 
-// The component is named SignUpForm, so the export should match
 export default SignUpForm;
