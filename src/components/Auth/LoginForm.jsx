@@ -8,7 +8,7 @@ const LoginForm = () => {
 
   // --- THIS IS THE FIX ---
   // We now use the environment variable for the API URL.
-  const API_ENDPOINT = `${process.env.API_URL}/api/user/login`;
+  const API_ENDPOINT = `${process.env.REACT_APP_API_URL}/api/user/login`;
   // --------------------
 
   const handleLogin = async (e) => {

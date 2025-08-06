@@ -12,7 +12,7 @@ const DocumentQA = () => {
   // --- THE CRITICAL FIX ---
   // We use an environment variable for the API URL.
   // This makes the component work both locally and when deployed.
-  const API_ENDPOINT = `${process.env.API_URL}/api/documents/process`;
+ const API_ENDPOINT = `${process.env.REACT_APP_API_URL}/api/documents/process`;
 
   // --- Event Handlers ---
   const handleFileChange = (event) => {

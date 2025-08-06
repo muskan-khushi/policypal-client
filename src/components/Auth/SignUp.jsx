@@ -10,7 +10,7 @@ const SignUpForm = () => {
 
   // --- THIS IS THE FIX ---
   // We use the same environment variable for the registration endpoint.
-  const API_ENDPOINT = `${process.env.API_URL}/api/user/register`;
+  const API_ENDPOINT = `${process.env.REACT_APP_API_URL}/api/user/register`;
   // --------------------
 
   const onSubmitHandler = async (e) => {
